@@ -311,7 +311,11 @@ static int axidma_mmap(struct file *file, struct vm_area_struct *vma)
     // Do not copy this memory region if this process is forked.
     /* TODO: Figure out the proper way to actually handle multiple processes
      * referring to the DMA buffer. */
+#if LINUX_VERSION_CODE < KERNEL_VERSION(6,4,0)
     vma->vm_flags |= VM_DONTCOPY;
+#else
+    vm_flags_set(vma, VM_DONTCOPY);
+#endif
 
     // Add the allocation to the driver's list of DMA buffers
     list_add(&dma_alloc->list, &dev->dmabuf_list);
@@ -579,7 +583,11 @@ int axidma_chrdev_init(struct axidma_device *dev)
     }
 
     // Create a device class for our device
+#if LINUX_VERSION_CODE < KERNEL_VERSION(6,4,0)
     dev->dev_class = class_create(THIS_MODULE, dev->chrdev_name);
+#else
+    dev->dev_class = class_create(dev->chrdev_name);
+#endif
     if (IS_ERR(dev->dev_class)) {
         axidma_err("Unable to create a device class.\n");
         rc = PTR_ERR(dev->dev_class);
