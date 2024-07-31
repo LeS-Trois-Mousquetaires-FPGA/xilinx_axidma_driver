@@ -31,6 +31,8 @@
 #include "axidma.h"             // Local definitions
 #include "axidma_ioctl.h"       // IOCTL interface for the device
 
+MODULE_IMPORT_NS(DMA_BUF);
+
 /*----------------------------------------------------------------------------
  * Internal Definitions
  *----------------------------------------------------------------------------*/
